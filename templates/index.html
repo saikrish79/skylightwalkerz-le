@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Listening Ear</title>
+  </head>
+  <body>
+    <div style="background-color: #eee" id="initialBody">
+      <div class="container py-5">
+        <div class="row d-flex justify-content-center">
+          <div class="col-md-10 col-lg-8 col-xl-6">
+            <div class="card" id="chat1">
+              <div
+                class="card-header d-flex justify-content-between align-items-center p-3"
+              ></div>
+              <div class="card-body text-center d-flex justify-content-center align-items-center mt-3 gap-2" data-mdb-perfect-scrollbar="true" style="position: relative; height: 400px">
+                <div id="LoginSelection">
+                    <h1 class="text-center">Login as:</h1>
+                    <button type="button" class="btn btn-primary btn-lg btn-block mx-2 flex-fill" onclick="forwardToClient()"><span class="visually-hidden">Client button</span>Client</button>
+                    <button type="button" class="btn btn-primary btn-lg btn-block mx-2 flex-fill" onclick="handleTherapist()"><span class="visually-hidden">Therapist button</span>Therapist</button>
+                    </div>
+              
+              <div id="optionforClients" style="display: none;">
+                <div class="d-grid gap-2 col-6 mx-auto">
+                  <button class="btn btn-primary" type="button" onclick="forwardToCrisis()"><span class="visually-hidden">Crisis button</span>I am in a crisis and need immediate help</button>
+                  <button class="btn btn-primary" type="button" onclick="forwardToCollectData(false)"><span class="visually-hidden">Councilling button</span>I want councelling</button>
+                  <button class="btn btn-primary" type="button" onclick="forwardToCollectData(true)"><span class="visually-hidden">Referral button</span>I want to refer someone else</button>
+                  <button class="btn btn-primary" type="button"><span class="visually-hidden">Existing member button</span>I am an existing member</button>
+                  </div>
+                </div>
+                <div class="mb-3" id="optionforTherapists" style="display: none;">
+                  <label for="name" class="form-label">Therapist Name</label>
+                  <input type="text" class="form-control" id="therapistName" placeholder="Please enter your full name" required>
+                  <button class="btn btn-primary" type="button" onclick="forwardToTherapist()"><span class="visually-hidden">Existing member button</span>Login</button>
+              </div>
+              </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display:none;" id="consentForm">
+    <div class="d-flex align-items-center justify-content-center" style=" display:none;" id="consentForm">
+      <div class="container">
+          <div class="row justify-content-center">
+              <div class="col-md-6">
+                  <form onsubmit="handleCollectedData()">
+                      <div class="mb-3">
+                          <label for="name" class="form-label">Client Name</label>
+                          <input type="text" class="form-control" id="name" placeholder="Please enter the client's full name" required>
+                      </div>
+                      <div class="mb-3">
+                          <label for="date" class="form-label">Client Date of Birth</label>
+                          <input type="date" class="form-control" id="dob" required>
+                      </div>
+                      <div class="mb-3">
+                          <label for="Postcode" class="form-label">Client Postcode</label>
+                          <input type="postcode" class="form-control" id="postcode" placeholder="Please enter the client's postcode" required>
+                      </div>
+                      <div class="mb-3" id="referrerName_1">
+                          <label for="name" class="form-label" aria-placeholder="If you are referring a client please enter your name here">Referrer Name</label>
+                          <input type="text" class="form-control" id="referrerName" placeholder="If you are referring a client please enter your name here" value="">
+                      </div>
+                      <div class="mb-3" id="relationship_1">
+                          <label for="Relationship" class="form-label" aria-placeholder="If you are referring a client please enter your releationship to the client here">Referrer Relationship to Client</label>
+                          <input type="text" class="form-control" id="relationship" placeholder="If you are referring a client please enter your releationship to the client here" value="">
+                      </div>
+                      <div class="mb-3">
+                          <label for="message" class="form-label">Please select the support you are interested in?</label>
+                          <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                              <label class="form-check-label single-select-checkbox" for="flexCheckDefault">
+                                Bereavement
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                              <label class="form-check-label single-select-checkbox" for="flexCheckDefault">
+                                Domestic Abuse
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                              <label class="form-check-label single-select-checkbox" for="flexCheckDefault">
+                                Anxiety
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                              <label class="form-check-label single-select-checkbox" for="flexCheckDefault">
+                                Depression
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                              <label class="form-check-label single-select-checkbox" for="flexCheckDefault">
+                                Other
+                              </label>
+                            </div>
+                            <div class="mb-3">
+                              <label class="form-check-label mt-5">
+                                  <input class="form-check-input" type="checkbox" required> I consent to my data being collected, stored and processed by Listening Ear
+                              </label>
+                          </div>
+                      </div>
+                      <div class="d-flex align-items-center justify-content-center" >
+                        <button type="submit" class="btn btn-primary mb-5">Submit</button>  
+                      </div>
+                      
+                  </form>
+              </div>
+          </div>
+      </div>
+    </div>
+  </div>
+    <script src="static/initialScript.js"></script>
+  </body>
+</html>
